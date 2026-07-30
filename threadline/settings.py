@@ -13,15 +13,9 @@ SECRET_KEY = os.environ.get(
     'django-insecure-threadline-v1-dev-key-replace-before-deployment'
 )
 
-# DEBUG is True locally, False on Railway (or any host that sets RAILWAY_ENVIRONMENT)
-DEBUG = os.environ.get('RAILWAY_ENVIRONMENT') is None and os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = (
-    ALLOWED_HOSTS_ENV.split(',')
-    if ALLOWED_HOSTS_ENV
-    else ['localhost', '127.0.0.1']
-)
+ALLOWED_HOSTS = ['*']
 
 # ---------------------------------------------------------------------------
 # Application definition

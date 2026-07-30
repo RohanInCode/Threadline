@@ -8,6 +8,8 @@ urlpatterns = [
     path('article/<slug:slug>/', views.article_detail, name='article_detail'),
     path('search/', views.search, name='search'),
     path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.signup_view, name='signup'),
 
     # Dashboard (CMS)
     path('dashboard/', views.dashboard, name='dashboard'),

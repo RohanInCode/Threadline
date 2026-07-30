@@ -16,15 +16,21 @@
     <form method="post" id="login-form" action="#">
       {% csrf_token %}
 
+      {% if error_message %}
+      <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.25rem; font-size: 0.9rem;">
+        {{ error_message }}
+      </div>
+      {% endif %}
+
       <div class="form-group">
-        <label for="login-email">Email address</label>
+        <label for="login-email">Username or Email address</label>
         <input
-          type="email"
+          type="text"
           id="login-email"
           name="email"
           class="form-control"
-          placeholder="editor@threadline.com"
-          autocomplete="email"
+          placeholder="editor@threadline.com or admin"
+          autocomplete="username"
           required
         />
       </div>
@@ -45,10 +51,15 @@
       <button type="submit" id="login-submit-btn" class="btn-primary">Sign in</button>
     </form>
 
-    <div class="login-card__footer">
+    <p style="margin-top:1.5rem; text-align:center; font-size:0.95rem; color:var(--text-secondary);">
+      Don't have an account yet?
+      <a href="{% url 'signup' %}" style="color:var(--accent); font-weight:600; text-decoration:none;">Create one &rarr;</a>
+    </p>
+
+    <div class="login-card__footer" style="margin-top:1rem;">
       <a href="{% url 'home' %}">&larr; Back to Threadline</a>
       &nbsp;&middot;&nbsp;
-      <span>V1 &mdash; auth wired in Phase 2</span>
+      <span>Threadline CMS &mdash; Secure Authentication</span>
     </div>
   </div>
 </div>

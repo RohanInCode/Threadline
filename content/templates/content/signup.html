@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign up — Threadline CMS{% endblock %}
+{% block meta_description %}Create an editor account for the Threadline content management system.{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-card__logo">Threadline</div>
+    <p class="login-card__sub">Content Management System</p>
+
+    <h1>Create Account</h1>
+    <p class="login-card__sub" style="margin-bottom:1.75rem;">Register as a writer or editor</p>
+
+    <form method="post" id="signup-form" action="#">
+      {% csrf_token %}
+
+      {% if error_message %}
+      <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.25rem; font-size: 0.9rem;">
+        {{ error_message }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="signup-username">Username</label>
+        <input
+          type="text"
+          id="signup-username"
+          name="username"
+          class="form-control"
+          placeholder="e.g. rohan_editor"
+          value="{{ username_val|default:'' }}"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="signup-email">Email address</label>
+        <input
+          type="email"
+          id="signup-email"
+          name="email"
+          class="form-control"
+          placeholder="editor@threadline.com"
+          value="{{ email_val|default:'' }}"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <input
+          type="password"
+          id="signup-password"
+          name="password"
+          class="form-control"
+          placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+          autocomplete="new-password"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="signup-password-confirm">Confirm Password</label>
+        <input
+          type="password"
+          id="signup-password-confirm"
+          name="password_confirm"
+          class="form-control"
+          placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+          autocomplete="new-password"
+          required
+        />
+      </div>
+
+      <button type="submit" id="signup-submit-btn" class="btn-primary">Create account &amp; Sign in</button>
+    </form>
+
+    <p style="margin-top:1.5rem; text-align:center; font-size:0.95rem; color:var(--text-secondary);">
+      Already have an account?
+      <a href="{% url 'login' %}" style="color:var(--accent); font-weight:600; text-decoration:none;">Sign in &rarr;</a>
+    </p>
+
+    <div class="login-card__footer" style="margin-top:1rem;">
+      <a href="{% url 'home' %}">&larr; Back to Threadline</a>
+      &nbsp;&middot;&nbsp;
+      <span>Threadline CMS &mdash; Secure Authentication</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

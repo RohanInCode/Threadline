@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from . import data
 
 
@@ -58,13 +61,68 @@ def search(request):
 
 
 def login_view(request):
+    error_message = None
+    if request.method == 'POST':
+        email_or_username = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+
+        # Check if login input is an email address, resolve to username
+        username = email_or_username
+        if '@' in email_or_username:
+            user_obj = User.objects.filter(email=email_or_username).first()
+            if user_obj:
+                username = user_obj.username
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            error_message = 'Invalid username/email or password.'
+
     return render(request, 'content/login.html', {
         'categories': data.all_categories(),
+        'error_message': error_message,
+    })
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
+def signup_view(request):
+    error_message = None
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        password_confirm = request.POST.get('password_confirm', '')
+
+        if not username or not email or not password:
+            error_message = 'Please fill out all required fields.'
+        elif password != password_confirm:
+            error_message = 'Passwords do not match.'
+        elif User.objects.filter(username__iexact=username).exists():
+            error_message = 'That username is already taken.'
+        elif User.objects.filter(email__iexact=email).exists():
+            error_message = 'An account with that email address already exists.'
+        else:
+            user = User.objects.create_user(username=username, email=email, password=password)
+            login(request, user)
+            return redirect('dashboard')
+
+    return render(request, 'content/signup.html', {
+        'categories': data.all_categories(),
+        'error_message': error_message,
+        'username_val': request.POST.get('username', '') if request.method == 'POST' else '',
+        'email_val': request.POST.get('email', '') if request.method == 'POST' else '',
     })
 
 
 # ---------------- Dashboard (CMS) ----------------
 
+@login_required(login_url='login')
 def dashboard(request):
     st = data.stats()
     return render(request, 'content/dashboard/overview.html', {
@@ -77,6 +135,7 @@ def dashboard(request):
     })
 
 
+@login_required(login_url='login')
 def dashboard_articles(request):
     q = request.GET.get('q', '').strip().lower()
     cat = request.GET.get('category', '').strip()
@@ -100,6 +159,7 @@ def dashboard_articles(request):
     })
 
 
+@login_required(login_url='login')
 def dashboard_article_create(request):
     return render(request, 'content/dashboard/article_create.html', {
         'article': None,
@@ -109,6 +169,7 @@ def dashboard_article_create(request):
     })
 
 
+@login_required(login_url='login')
 def dashboard_article_edit(request, pk):
     article = data.article_by_id(pk)
     if not article:
@@ -121,6 +182,7 @@ def dashboard_article_edit(request, pk):
     })
 
 
+@login_required(login_url='login')
 def dashboard_categories(request):
     categories = []
     for cat in data.all_categories():

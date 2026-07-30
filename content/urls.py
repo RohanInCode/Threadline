@@ -16,5 +16,6 @@ urlpatterns = [
     path('dashboard/articles/', views.dashboard_articles, name='dashboard_articles'),
     path('dashboard/articles/create/', views.dashboard_article_create, name='dashboard_article_create'),
     path('dashboard/articles/<int:pk>/edit/', views.dashboard_article_edit, name='dashboard_article_edit'),
+    path('dashboard/articles/<int:pk>/delete/', views.dashboard_article_delete, name='dashboard_article_delete'),
     path('dashboard/categories/', views.dashboard_categories, name='dashboard_categories'),
 ]

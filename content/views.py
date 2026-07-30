@@ -3,6 +3,8 @@ from django.http import Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.utils.text import slugify
+from .models import Article, Category
 from . import data
 
 
@@ -161,6 +163,32 @@ def dashboard_articles(request):
 
 @login_required(login_url='login')
 def dashboard_article_create(request):
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        slug_val = request.POST.get('slug', '').strip()
+        excerpt = request.POST.get('excerpt', '').strip()
+        content = request.POST.get('content', '').strip()
+        status = request.POST.get('status', 'draft')
+        category_slug = request.POST.get('category', '')
+        author = request.POST.get('author', '').strip()
+        image = request.POST.get('image', '').strip()
+
+        if not slug_val:
+            slug_val = slugify(title)
+
+        cat_obj = Category.objects.filter(slug=category_slug).first()
+        Article.objects.create(
+            title=title,
+            slug=slug_val,
+            excerpt=excerpt,
+            content=content,
+            status=status,
+            category=cat_obj,
+            author=author,
+            image=image,
+        )
+        return redirect('dashboard_articles')
+
     return render(request, 'content/dashboard/article_create.html', {
         'article': None,
         'all_categories': data.all_categories(),
@@ -171,15 +199,42 @@ def dashboard_article_create(request):
 
 @login_required(login_url='login')
 def dashboard_article_edit(request, pk):
-    article = data.article_by_id(pk)
-    if not article:
+    try:
+        article_obj = Article.objects.get(pk=pk)
+    except Article.DoesNotExist:
         raise Http404('Article not found')
+
+    if request.method == 'POST':
+        article_obj.title = request.POST.get('title', '').strip()
+        slug_val = request.POST.get('slug', '').strip()
+        if not slug_val:
+            slug_val = slugify(article_obj.title)
+        article_obj.slug = slug_val
+        article_obj.excerpt = request.POST.get('excerpt', '').strip()
+        article_obj.content = request.POST.get('content', '').strip()
+        article_obj.status = request.POST.get('status', 'draft')
+        category_slug = request.POST.get('category', '')
+        article_obj.category = Category.objects.filter(slug=category_slug).first()
+        article_obj.author = request.POST.get('author', '').strip()
+        article_obj.image = request.POST.get('image', '').strip()
+        article_obj.save()
+        return redirect('dashboard_articles')
+
+    article_dict = article_obj.to_dict()
     return render(request, 'content/dashboard/article_edit.html', {
-        'article': article,
+        'article': article_dict,
         'all_categories': data.all_categories(),
         'mode': 'edit',
         'active': 'articles',
     })
+
+
+@login_required(login_url='login')
+def dashboard_article_delete(request, pk):
+    if request.method == 'POST':
+        Article.objects.filter(pk=pk).delete()
+    return redirect('dashboard_articles')
+
 
 
 @login_required(login_url='login')

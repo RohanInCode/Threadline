@@ -93,9 +93,6 @@
             <button type="submit" id="ea-submit-btn" class="btn btn--primary">Update Article</button>
             <a href="{% url 'dashboard_articles' %}" class="btn btn--secondary">Cancel</a>
           </div>
-          <p style="margin-top:.75rem;font-size:.74rem;color:var(--text-3);">
-            &#8505; POST handling wired in Phase 2.
-          </p>
         </div>
       </div>
 
@@ -157,8 +154,11 @@
           <p style="font-size:.82rem;color:var(--text-2);margin-bottom:1rem;">
             Deleting an article is permanent and cannot be undone.
           </p>
-          <button type="button" id="ea-delete-btn" class="btn btn--danger"
-                  onclick="alert('Delete wired in Phase 2.')">
+          <button type="submit"
+                  formaction="{% url 'dashboard_article_delete' article.id %}"
+                  id="ea-delete-btn"
+                  class="btn btn--danger"
+                  onclick="return confirm('Are you sure you want to permanently delete this article?');">
             &#128465; Delete Article
           </button>
         </div>

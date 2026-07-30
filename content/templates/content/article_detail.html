@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} — Threadline{% endblock %}
+{% block meta_description %}{{ article.excerpt }}{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+  <div class="article-layout">
+
+    <!-- ===== MAIN ARTICLE ===== -->
+    <article>
+      <img
+        class="article-hero-img"
+        src="{{ article.image }}"
+        alt="{{ article.title }}"
+        loading="eager"
+      />
+
+      <header class="article-header">
+        <div class="article-header__badge">
+          <span class="badge badge--{{ article.category }}">{{ article.category }}</span>
+        </div>
+        <h1 class="article-title">{{ article.title }}</h1>
+        <p class="article-excerpt">{{ article.excerpt }}</p>
+        <div class="article-meta">
+          <span class="article-author">&#128100; {{ article.author }}</span>
+          <span>&#128197; {{ article.created_at }}</span>
+          <span class="status-badge status-badge--{{ article.status }}">{{ article.status }}</span>
+        </div>
+      </header>
+
+      <div class="article-body">
+        {{ article.content|safe }}
+      </div>
+    </article>
+
+    <!-- ===== RELATED SIDEBAR ===== -->
+    <aside class="related-section" aria-label="Related articles">
+      <div class="section-header">
+        <h2>Related</h2>
+      </div>
+      {% for rel in related %}
+      <a href="{% url 'article_detail' rel.slug %}" class="related-card">
+        <img class="related-card__img" src="{{ rel.image }}" alt="{{ rel.title }}" loading="lazy" />
+        <div>
+          <div class="related-card__title">{{ rel.title }}</div>
+          <div class="related-card__meta">{{ rel.author }} &middot; {{ rel.category }}</div>
+        </div>
+      </a>
+      {% empty %}
+      <p style="color:var(--text-muted);font-size:.85rem;">No related articles found.</p>
+      {% endfor %}
+    </aside>
+
+  </div>
+
+</div>
+{% endblock %}

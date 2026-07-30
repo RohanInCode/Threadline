@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block dash_title %}Dashboard{% endblock %} — Threadline CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="dash-layout">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="dash-sidebar" aria-label="CMS Navigation">
+    <a href="{% url 'home' %}" class="sidebar-brand">
+      <div class="sidebar-brand__logo">Threadline</div>
+      <div class="sidebar-brand__badge">CMS Dashboard</div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav__label">Content</div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'dashboard' %}"
+           class="{% block nav_overview %}{% endblock %}">
+          <span class="nav-icon">&#9749;</span> Overview
+        </a>
+      </div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'dashboard_articles' %}"
+           class="{% block nav_articles %}{% endblock %}">
+          <span class="nav-icon">&#128196;</span> Articles
+        </a>
+      </div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'dashboard_categories' %}"
+           class="{% block nav_categories %}{% endblock %}">
+          <span class="nav-icon">&#127991;</span> Categories
+        </a>
+      </div>
+
+      <div class="sidebar-nav__label" style="margin-top:1rem;">Quick Actions</div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'dashboard_article_create' %}">
+          <span class="nav-icon">&#43;</span> New Article
+        </a>
+      </div>
+
+      <div class="sidebar-nav__label" style="margin-top:1rem;">Site</div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'home' %}" target="_blank" rel="noopener">
+          <span class="nav-icon">&#127760;</span> View Site
+        </a>
+      </div>
+
+      <div class="sidebar-nav__item">
+        <a href="{% url 'login' %}">
+          <span class="nav-icon">&#128274;</span> Login Page
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>Phase 1 &mdash; Mock Data</span>
+    </div>
+  </aside>
+
+  <!-- ==================== TOPBAR ==================== -->
+  <header class="dash-topbar">
+    <div>
+      <div class="topbar__page-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+      <div class="topbar__breadcrumb">
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        {% block breadcrumb %}{% endblock %}
+      </div>
+    </div>
+    <div class="topbar__spacer"></div>
+    {% block topbar_action %}
+    <a href="{% url 'dashboard_article_create' %}" class="topbar__action-btn" id="topbar-new-article-btn">
+      &#43; New Article
+    </a>
+    {% endblock %}
+  </header>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="dash-main" id="dash-main-content">
+    {% block dash_content %}{% endblock %}
+  </main>
+
+</div><!-- /.dash-layout -->
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login — Threadline CMS{% endblock %}
+{% block meta_description %}Login to the Threadline content management system.{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-card__logo">Threadline</div>
+    <p class="login-card__sub">Content Management System</p>
+
+    <h1>Welcome back</h1>
+    <p class="login-card__sub" style="margin-bottom:1.75rem;">Sign in to your editor account</p>
+
+    <form method="post" id="login-form" action="#">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="login-email">Email address</label>
+        <input
+          type="email"
+          id="login-email"
+          name="email"
+          class="form-control"
+          placeholder="editor@threadline.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input
+          type="password"
+          id="login-password"
+          name="password"
+          class="form-control"
+          placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button type="submit" id="login-submit-btn" class="btn-primary">Sign in</button>
+    </form>
+
+    <div class="login-card__footer">
+      <a href="{% url 'home' %}">&larr; Back to Threadline</a>
+      &nbsp;&middot;&nbsp;
+      <span>V1 &mdash; auth wired in Phase 2</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "content/dashboard/base_dashboard.html" %}
+
+{% block dash_title %}Edit: {{ article.title|truncatewords:5 }}{% endblock %}
+{% block topbar_title %}Edit Article{% endblock %}
+{% block nav_articles %}active{% endblock %}
+{% block breadcrumb %}&rsaquo; <a href="{% url 'dashboard_articles' %}">Articles</a> &rsaquo; Edit{% endblock %}
+{% block topbar_action %}{% endblock %}
+
+{% block dash_content %}
+
+<form method="post" action="#" id="edit-article-form">
+  {% csrf_token %}
+
+  <div class="article-form">
+
+    <!-- ===== Left Column: Main Fields ===== -->
+    <div>
+
+      <div class="dash-panel">
+        <div class="dash-panel__header">
+          <span class="dash-panel__title">Article Details</span>
+          <a href="{% url 'article_detail' article.slug %}" target="_blank" rel="noopener"
+             style="font-size:.8rem;color:var(--dash-accent-l);">
+            View live &rarr;
+          </a>
+        </div>
+        <div class="dash-panel__body">
+
+          <div class="form-group">
+            <label class="form-label" for="ea-title">Title</label>
+            <input
+              type="text"
+              id="ea-title"
+              name="title"
+              class="form-input"
+              value="{{ article.title }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ea-slug">Slug</label>
+            <input
+              type="text"
+              id="ea-slug"
+              name="slug"
+              class="form-input"
+              value="{{ article.slug }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ea-excerpt">Excerpt</label>
+            <textarea
+              id="ea-excerpt"
+              name="excerpt"
+              class="form-textarea"
+              rows="3"
+            >{{ article.excerpt }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ea-content">Content (HTML)</label>
+            <textarea
+              id="ea-content"
+              name="content"
+              class="form-textarea"
+              rows="14"
+            >{{ article.content }}</textarea>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Right Column: Meta ===== -->
+    <div>
+
+      <div class="dash-panel" style="margin-bottom:1.25rem;">
+        <div class="dash-panel__header">
+          <span class="dash-panel__title">Publish</span>
+        </div>
+        <div class="dash-panel__body">
+          <div class="form-group">
+            <label class="form-label" for="ea-status">Status</label>
+            <select id="ea-status" name="status" class="form-select">
+              <option value="draft"      {% if article.status == 'draft' %}selected{% endif %}>Draft</option>
+              <option value="published"  {% if article.status == 'published' %}selected{% endif %}>Published</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="ea-submit-btn" class="btn btn--primary">Update Article</button>
+            <a href="{% url 'dashboard_articles' %}" class="btn btn--secondary">Cancel</a>
+          </div>
+          <p style="margin-top:.75rem;font-size:.74rem;color:var(--text-3);">
+            &#8505; POST handling wired in Phase 2.
+          </p>
+        </div>
+      </div>
+
+      <div class="dash-panel">
+        <div class="dash-panel__header">
+          <span class="dash-panel__title">Metadata</span>
+        </div>
+        <div class="dash-panel__body">
+
+          <div class="form-group">
+            <label class="form-label" for="ea-category">Category</label>
+            <select id="ea-category" name="category" class="form-select">
+              {% for cat in categories %}
+              <option value="{{ cat.slug }}" {% if article.category == cat.slug %}selected{% endif %}>
+                {{ cat.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ea-author">Author</label>
+            <input
+              type="text"
+              id="ea-author"
+              name="author"
+              class="form-input"
+              value="{{ article.author }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ea-image">Image URL</label>
+            <input
+              type="url"
+              id="ea-image"
+              name="image"
+              class="form-input"
+              value="{{ article.image }}"
+            />
+          </div>
+
+          {% if article.image %}
+          <div style="margin-top:.75rem;border-radius:8px;overflow:hidden;">
+            <img src="{{ article.image }}" alt="Article image preview"
+                 style="width:100%;height:140px;object-fit:cover;" />
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="dash-panel" style="border-color:rgba(239,68,68,0.2);">
+        <div class="dash-panel__header">
+          <span class="dash-panel__title" style="color:var(--dash-danger);">Danger Zone</span>
+        </div>
+        <div class="dash-panel__body">
+          <p style="font-size:.82rem;color:var(--text-2);margin-bottom:1rem;">
+            Deleting an article is permanent and cannot be undone.
+          </p>
+          <button type="button" id="ea-delete-btn" class="btn btn--danger"
+                  onclick="alert('Delete wired in Phase 2.')">
+            &#128465; Delete Article
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /right col -->
+
+  </div><!-- /article-form -->
+
+</form>
+
+{% endblock %}

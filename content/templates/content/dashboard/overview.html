@@ -1,0 +1,104 @@
+{% extends "content/dashboard/base_dashboard.html" %}
+
+{% block dash_title %}Overview{% endblock %}
+{% block topbar_title %}Overview{% endblock %}
+{% block nav_overview %}active{% endblock %}
+{% block breadcrumb %}&rsaquo; Overview{% endblock %}
+{% block topbar_action %}
+<a href="{% url 'dashboard_article_create' %}" class="topbar__action-btn" id="topbar-new-article-btn">
+  &#43; New Article
+</a>
+{% endblock %}
+
+{% block dash_content %}
+
+<!-- Stat Cards -->
+<div class="stat-cards">
+
+  <div class="stat-card stat-card--accent">
+    <div class="stat-card__icon">&#128196;</div>
+    <div class="stat-card__value">{{ total_articles }}</div>
+    <div class="stat-card__label">Total Articles</div>
+    <div class="stat-card__bg-icon">&#128196;</div>
+  </div>
+
+  <div class="stat-card stat-card--success">
+    <div class="stat-card__icon">&#9989;</div>
+    <div class="stat-card__value">{{ published_count }}</div>
+    <div class="stat-card__label">Published</div>
+    <div class="stat-card__bg-icon">&#9989;</div>
+  </div>
+
+  <div class="stat-card stat-card--warning">
+    <div class="stat-card__icon">&#128393;</div>
+    <div class="stat-card__value">{{ drafts_count }}</div>
+    <div class="stat-card__label">Drafts</div>
+    <div class="stat-card__bg-icon">&#128393;</div>
+  </div>
+
+  <div class="stat-card stat-card--info">
+    <div class="stat-card__icon">&#127991;</div>
+    <div class="stat-card__value">{{ categories_count }}</div>
+    <div class="stat-card__label">Categories</div>
+    <div class="stat-card__bg-icon">&#127991;</div>
+  </div>
+
+</div>
+
+<!-- Recent Articles Table -->
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <span class="dash-panel__title">Recent Articles</span>
+    <a href="{% url 'dashboard_articles' %}" style="font-size:.8rem;color:var(--dash-accent-l);">View all &rarr;</a>
+  </div>
+  <div class="dash-table-wrap">
+    <table class="dash-table" id="overview-articles-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in recent_articles %}
+        <tr>
+          <td class="title-cell">
+            <a href="{% url 'article_detail' article.slug %}" target="_blank" rel="noopener">
+              {{ article.title }}
+            </a>
+          </td>
+          <td>
+            <span class="badge badge--{{ article.category }}">{{ article.category }}</span>
+          </td>
+          <td>{{ article.author }}</td>
+          <td>
+            <span class="badge badge--{{ article.status }}">{{ article.status }}</span>
+          </td>
+          <td style="white-space:nowrap;">{{ article.created_at }}</td>
+          <td>
+            <a href="{% url 'dashboard_article_edit' article.id %}"
+               style="font-size:.8rem;color:var(--dash-accent-l);font-weight:600;">
+              Edit
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <div class="empty-state__icon">&#128196;</div>
+              <p>No articles yet.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

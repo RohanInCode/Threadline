@@ -1,0 +1,117 @@
+{% extends "content/dashboard/base_dashboard.html" %}
+
+{% block dash_title %}Articles{% endblock %}
+{% block topbar_title %}Article Management{% endblock %}
+{% block nav_articles %}active{% endblock %}
+{% block breadcrumb %}&rsaquo; Articles{% endblock %}
+
+{% block dash_content %}
+
+<!-- Filters Bar -->
+<form class="filters-bar" method="get" action="{% url 'dashboard_articles' %}" id="articles-filter-form">
+  <div class="filter-group">
+    <label for="filter-q">Search</label>
+    <input
+      type="search"
+      id="filter-q"
+      name="q"
+      class="filter-control"
+      placeholder="Article title…"
+      value="{{ query }}"
+    />
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-cat">Category</label>
+    <select id="filter-cat" name="category" class="filter-control">
+      <option value="">All categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat.slug }}" {% if category_filter == cat.slug %}selected{% endif %}>
+        {{ cat.name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-status">Status</label>
+    <select id="filter-status" name="status" class="filter-control">
+      <option value="">All statuses</option>
+      <option value="published" {% if status_filter == 'published' %}selected{% endif %}>Published</option>
+      <option value="draft"     {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+    </select>
+  </div>
+
+  <button type="submit" id="filter-submit-btn" class="filter-btn">&#128269; Filter</button>
+
+  {% if query or category_filter or status_filter %}
+  <a href="{% url 'dashboard_articles' %}" class="filter-clear" id="filter-clear-btn">&#10005; Clear</a>
+  {% endif %}
+</form>
+
+<!-- Results count -->
+<p style="font-size:.82rem;color:var(--text-3);margin-bottom:1rem;">
+  Showing {{ articles|length }} article{{ articles|length|pluralize }}
+  {% if query or category_filter or status_filter %}(filtered){% endif %}
+</p>
+
+<!-- Articles Table -->
+<div class="dash-panel">
+  <div class="dash-panel__header">
+    <span class="dash-panel__title">Articles</span>
+    <a href="{% url 'dashboard_article_create' %}" class="topbar__action-btn" id="create-article-btn"
+       style="font-size:.8rem;padding:.38rem .85rem;">
+      &#43; New
+    </a>
+  </div>
+  <div class="dash-table-wrap">
+    <table class="dash-table" id="articles-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+        <tr>
+          <td class="title-cell">
+            <a href="{% url 'article_detail' article.slug %}" target="_blank" rel="noopener">
+              {{ article.title }}
+            </a>
+          </td>
+          <td><span class="badge badge--{{ article.category }}">{{ article.category }}</span></td>
+          <td>{{ article.author }}</td>
+          <td><span class="badge badge--{{ article.status }}">{{ article.status }}</span></td>
+          <td style="white-space:nowrap;">{{ article.created_at }}</td>
+          <td style="white-space:nowrap;">
+            <a href="{% url 'dashboard_article_edit' article.id %}"
+               style="font-size:.8rem;color:var(--dash-accent-l);font-weight:600;margin-right:.75rem;">
+              Edit
+            </a>
+            <a href="{% url 'article_detail' article.slug %}" target="_blank"
+               style="font-size:.8rem;color:var(--text-3);font-weight:500;">
+              View
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <div class="empty-state__icon">&#128196;</div>
+              <p>No articles match your filters.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

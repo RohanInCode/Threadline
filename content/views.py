@@ -175,6 +175,14 @@ def dashboard_article_create(request):
 
         if not slug_val:
             slug_val = slugify(title)
+        if not slug_val:
+            slug_val = 'article'
+
+        base_slug = slug_val
+        counter = 1
+        while Article.objects.filter(slug=slug_val).exists():
+            slug_val = f"{base_slug}-{counter}"
+            counter += 1
 
         cat_obj = Category.objects.filter(slug=category_slug).first()
         Article.objects.create(
@@ -189,9 +197,11 @@ def dashboard_article_create(request):
         )
         return redirect('dashboard_articles')
 
+    cats = data.all_categories()
     return render(request, 'content/dashboard/article_create.html', {
         'article': None,
-        'all_categories': data.all_categories(),
+        'categories': cats,
+        'all_categories': cats,
         'mode': 'create',
         'active': 'create',
     })
@@ -209,6 +219,15 @@ def dashboard_article_edit(request, pk):
         slug_val = request.POST.get('slug', '').strip()
         if not slug_val:
             slug_val = slugify(article_obj.title)
+        if not slug_val:
+            slug_val = f'article-{article_obj.pk}'
+
+        base_slug = slug_val
+        counter = 1
+        while Article.objects.filter(slug=slug_val).exclude(pk=article_obj.pk).exists():
+            slug_val = f"{base_slug}-{counter}"
+            counter += 1
+
         article_obj.slug = slug_val
         article_obj.excerpt = request.POST.get('excerpt', '').strip()
         article_obj.content = request.POST.get('content', '').strip()
@@ -221,9 +240,11 @@ def dashboard_article_edit(request, pk):
         return redirect('dashboard_articles')
 
     article_dict = article_obj.to_dict()
+    cats = data.all_categories()
     return render(request, 'content/dashboard/article_edit.html', {
         'article': article_dict,
-        'all_categories': data.all_categories(),
+        'categories': cats,
+        'all_categories': cats,
         'mode': 'edit',
         'active': 'articles',
     })

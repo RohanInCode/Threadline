@@ -173,8 +173,7 @@ def dashboard_article_create(request):
         author = request.POST.get('author', '').strip()
         image = request.POST.get('image', '').strip()
 
-        if not slug_val:
-            slug_val = slugify(title)
+        slug_val = slugify(slug_val) if slug_val else slugify(title)
         if not slug_val:
             slug_val = 'article'
 
@@ -217,8 +216,7 @@ def dashboard_article_edit(request, pk):
     if request.method == 'POST':
         article_obj.title = request.POST.get('title', '').strip()
         slug_val = request.POST.get('slug', '').strip()
-        if not slug_val:
-            slug_val = slugify(article_obj.title)
+        slug_val = slugify(slug_val) if slug_val else slugify(article_obj.title)
         if not slug_val:
             slug_val = f'article-{article_obj.pk}'
 
